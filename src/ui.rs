@@ -62,7 +62,6 @@ const PRESETS: [(&str, &str, i32, i32); 3] = [
     ("N화", "{ep}화", 112, 44),
     ("현재 N화", "현재 {ep}화", 160, 72),
 ];
-const EXAMPLE: &str = "신세기 에반게리온 1화";
 const HELP_TEXT: &str = "1. OBS → 도구 → WebSocket 서버 설정 → WebSocket 서버 사용 체크\r\n\
 2. [서버 정보 표시] 버튼을 눌러 나오는 서버 IP / 포트 / 비밀번호를 입력\r\n   (원컴 환경에선 서버 IP 127.0.0.1 그대로 사용 가능)\r\n\
 3. OBS 쪽에 텍스트(GDI+) 소스를 추가하고, 소스 이름을 위 \"텍스트 소스 이름\"과 똑같이 세팅\r\n\
@@ -496,18 +495,20 @@ unsafe fn draw_item(d: &DRAWITEMSTRUCT) {
     match id {
         i if (ID_VAR..ID_VAR + VARS.len() as i32).contains(&i) => {
             let (code, desc) = VARS[(i - ID_VAR) as usize];
-            let (name, ep) = title::parse_episode(v.raw.as_deref().unwrap_or(EXAMPLE));
-            let pre = if v.raw.is_some() { "" } else { "예: " };
-            let value = match code {
-                "{title}" => v.raw.clone().unwrap_or_else(|| EXAMPLE.into()),
-                "{name}" => name,
-                _ => if ep.is_empty() { "(없음)".into() } else { ep },
-            };
             let chip = rect(r.left, r.top + px(3), r.left + px(52), r.bottom - px(3));
             round(hdc, &chip, h, LINE, LINE);
             text(hdc, code, chip, F_CODE, TEXT, CENTER);
             text(hdc, desc, rect(r.left + px(60), r.top, r.left + px(122), r.bottom), F_CHIP, TEXT, LEFT);
-            text(hdc, &format!("{pre}{value}"), rect(r.left + px(124), r.top, r.right, r.bottom), F_CHIP, MUTED, LEFT);
+            // 같이보기가 감지됐을 때만 실제 값 표시
+            if let Some(raw) = &v.raw {
+                let (name, ep) = title::parse_episode(raw);
+                let value = match code {
+                    "{title}" => raw.clone(),
+                    "{name}" => name,
+                    _ => if ep.is_empty() { "(없음)".into() } else { ep },
+                };
+                text(hdc, &value, rect(r.left + px(124), r.top, r.right, r.bottom), F_CHIP, MUTED, LEFT);
+            }
         }
         i if (ID_PRESET..ID_PRESET + PRESETS.len() as i32).contains(&i) => {
             let (label, tpl, _, _) = PRESETS[(i - ID_PRESET) as usize];
