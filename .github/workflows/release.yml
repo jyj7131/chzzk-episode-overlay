@@ -1,0 +1,46 @@
+# v로 시작하는 태그를 올리면 GitHub가 소스에서 직접 exe를 빌드해 Release에 올림
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write      # Release 생성
+  id-token: write      # 빌드 증명(attestation) 서명
+  attestations: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Test
+        run: cargo test --release
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $dir = "chzzk-episode-overlay-${{ github.ref_name }}"
+          New-Item -ItemType Directory $dir | Out-Null
+          Copy-Item target/release/chzzk-episode-overlay.exe $dir/
+          Copy-Item README.txt $dir/
+          Compress-Archive -Path $dir -DestinationPath "$dir.zip"
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            target/release/chzzk-episode-overlay.exe
+            chzzk-episode-overlay-${{ github.ref_name }}.zip
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" "chzzk-episode-overlay-${{ github.ref_name }}.zip" --title "${{ github.ref_name }}" --generate-notes

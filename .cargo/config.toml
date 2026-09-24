@@ -1,0 +1,3 @@
+# C 런타임(VCRUNTIME140.dll)까지 exe 안에 포함 → exe 하나로 배포
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

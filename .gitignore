@@ -1,0 +1,8 @@
+# 빌드 결과물
+/target
+/target-dist
+
+# 사용자 설정 (OBS 비밀번호 포함) — 절대 올리지 않음
+chzzk-episode-overlay.json
+chzzk-episode-obs.json
+*.tmp
