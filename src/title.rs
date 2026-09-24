@@ -1,4 +1,4 @@
-// 창 제목: "치지직 같이보기 - 신세기 에반게리온 1화 - CHZZK - Chrome"
+// 창 제목: "치지직 같이보기 - 작품명 1화 - CHZZK - Chrome"
 // (브라우저마다 " - CHZZK" 뒤에 붙는 부분이 달라서 앞뒤 표식만 봄)
 
 const PREFIX: &str = "치지직 같이보기 - ";
@@ -11,7 +11,7 @@ pub fn extract(window_title: &str) -> Option<String> {
     (!raw.is_empty()).then(|| raw.to_string())
 }
 
-// "신세기 에반게리온 1화" -> ("신세기 에반게리온", "1")
+// "작품명 1화" -> ("작품명", "1")
 pub fn parse_episode(raw: &str) -> (String, String) {
     let chars: Vec<(usize, char)> = raw.char_indices().collect();
     let mut i = 0;
@@ -47,7 +47,7 @@ mod tests {
 
     #[test]
     fn extract_titles() {
-        assert_eq!(extract("치지직 같이보기 - 신세기 에반게리온 1화 - CHZZK - Chrome").as_deref(), Some("신세기 에반게리온 1화"));
+        assert_eq!(extract("치지직 같이보기 - 작품명 1화 - CHZZK - Chrome").as_deref(), Some("작품명 1화"));
         assert_eq!(extract("치지직 같이보기 - A - B 2화 - CHZZK - Whale").as_deref(), Some("A - B 2화"));
         assert_eq!(extract("치지직 - CHZZK - Chrome"), None);
         assert_eq!(extract("YouTube - Chrome"), None);
@@ -55,10 +55,10 @@ mod tests {
 
     #[test]
     fn episodes() {
-        assert_eq!(parse_episode("신세기 에반게리온 1화"), ("신세기 에반게리온".into(), "1".into()));
-        assert_eq!(parse_episode("86 에이티식스 3화"), ("86 에이티식스".into(), "3".into()));
+        assert_eq!(parse_episode("작품명 1화"), ("작품명".into(), "1".into()));
+        assert_eq!(parse_episode("제목 86 3화"), ("제목 86".into(), "3".into()));
         assert_eq!(parse_episode("극장판"), ("극장판".into(), "".into()));
-        assert_eq!(format("현재 {ep}화", "신세기 에반게리온 12화"), "현재 12화");
-        assert_eq!(format("{name} | EP.{ep}", "신세기 에반게리온 1화"), "신세기 에반게리온 | EP.1");
+        assert_eq!(format("현재 {ep}화", "작품명 12화"), "현재 12화");
+        assert_eq!(format("{name} | EP.{ep}", "작품명 1화"), "작품명 | EP.1");
     }
 }
