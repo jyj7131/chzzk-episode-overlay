@@ -14,10 +14,10 @@ impl Default for Config {
     fn default() -> Self {
         Config {
             template: "{title}".into(),
-            host: "127.0.0.1".into(),
+            host: String::new(), // 비어 있으면 127.0.0.1로 연결
             port: 4455,
             password: String::new(),
-            source: "같이보기 화수".into(),
+            source: String::new(),
         }
     }
 }

@@ -20,6 +20,9 @@ pub(crate) const APP_NAME: &str = "같이보기 화수 표시";
 pub(crate) const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub(crate) const WINDOW_CLASS: &str = "ChzzkEpObsWindow";
 
+pub(crate) const DEFAULT_HOST: &str = "127.0.0.1";
+const NEED_SOURCE: &str = "텍스트 소스 이름을 입력하세요";
+
 pub(crate) const WM_APP_STATUS: u32 = 0x8002;
 const TIMER_CLEAR: usize = 1;
 const TIMER_TEMPLATE: usize = 2;
@@ -67,7 +70,7 @@ pub(crate) struct App {
 impl App {
     fn obs_cfg(&self) -> obs::Cfg {
         obs::Cfg {
-            host: self.cfg.host.clone(),
+            host: if self.cfg.host.is_empty() { DEFAULT_HOST.into() } else { self.cfg.host.clone() },
             port: self.cfg.port,
             password: self.cfg.password.clone(),
             source: self.cfg.source.clone(),
@@ -79,7 +82,20 @@ impl App {
     }
 
     fn push(&mut self, force: bool) {
+        if self.cfg.source.is_empty() {
+            return; // 아직 설정 전
+        }
         let _ = self.tx.send(Job::Push { cfg: self.obs_cfg(), text: self.output(), force });
+    }
+
+    // 연결 확인 (소스 이름이 비어 있으면 시도하지 않고 안내)
+    fn test_connection(&mut self) {
+        if self.cfg.source.is_empty() {
+            self.conn = Conn::Err(NEED_SOURCE.into());
+            return;
+        }
+        self.conn = Conn::Busy;
+        let _ = self.tx.send(Job::Test { cfg: self.obs_cfg() });
     }
 
     // 안전장치: 닫힌 창이나 더 이상 같이보기가 아닌 창은 목록에서 제거 (닫힘 알림을 놓친 경우 대비)
@@ -245,13 +261,12 @@ pub(crate) fn set_template(t: String) {
 // OBS 연결 칸은 [연결하기]를 눌러야 저장 + 연결 확인, 성공하면 바로 전송
 pub(crate) fn connect(host: String, port: u16, password: String, source: String) {
     with(|a| {
-        a.cfg.host = if host.is_empty() { "127.0.0.1".into() } else { host };
+        a.cfg.host = host; // 비어 있으면 연결할 때 127.0.0.1 사용
         a.cfg.port = port;
         a.cfg.password = password;
         a.cfg.source = source;
         a.cfg.save();
-        a.conn = Conn::Busy;
-        let _ = a.tx.send(Job::Test { cfg: a.obs_cfg() });
+        a.test_connection();
     });
     refresh_ui();
 }
@@ -361,10 +376,7 @@ fn main() {
         rescan(false);
         if existed {
             // 시작할 때 OBS 연결 상태 확인 (성공하면 현재 제목 전송)
-            with(|a| {
-                a.conn = Conn::Busy;
-                let _ = a.tx.send(Job::Test { cfg: a.obs_cfg() });
-            });
+            with(|a| a.test_connection());
             refresh_ui();
         }
         ui::show(win);

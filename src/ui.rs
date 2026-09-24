@@ -165,9 +165,8 @@ fn set_text(id: i32, s: &str) {
 }
 
 fn read_obs_form() -> (String, u16, String, String) {
-    let host = ctrl_text(ID_HOST).trim().to_string();
     (
-        if host.is_empty() { "127.0.0.1".into() } else { host },
+        ctrl_text(ID_HOST).trim().to_string(), // 비어 있으면 연결할 때 127.0.0.1
         ctrl_text(ID_PORT).trim().parse().unwrap_or(4455),
         ctrl_text(ID_PASSWORD),
         ctrl_text(ID_SOURCE).trim().to_string(),
@@ -310,6 +309,9 @@ unsafe fn create_controls(win: HWND, hinst: HINSTANCE) {
     make("STATIC", "서버 IP", STATIC_LINE, ID_L_HOST, F_LABEL);
     make("STATIC", "서버 포트", STATIC_LINE, ID_L_PORT, F_LABEL);
     make("EDIT", "", EDIT, ID_HOST, F_BODY);
+    // 비어 있을 때 반투명으로 기본값 표시 (EM_SETCUEBANNER, 입력 중에도 표시)
+    let cue = wide(crate::DEFAULT_HOST);
+    SendMessageW(item(ID_HOST), 0x1501, 1, cue.as_ptr() as LPARAM);
     make("EDIT", "", EDIT | 0x2000, ID_PORT, F_BODY); // ES_NUMBER
     make("STATIC", "서버 비밀번호", STATIC_LINE, ID_L_PW, F_LABEL);
     make("BUTTON", "", OWNERDRAW, ID_SHOWPW, F_MINI);
