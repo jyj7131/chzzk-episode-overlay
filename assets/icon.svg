@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <g transform="rotate(-5 104 128)">
+    <rect x="10" y="58" width="188" height="140" rx="30" fill="#00DEB0"/>
+    <text x="104" y="167" text-anchor="middle" font-family="Segoe UI Black, Arial Black, sans-serif" font-weight="900" font-size="104" fill="#FFFFFF" letter-spacing="-4">Ep</text>
+  </g>
+  <path d="M210 92 L242 128 L210 164" fill="none" stroke="#00DEB0" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

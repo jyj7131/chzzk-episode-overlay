@@ -1,3 +1,5 @@
+<img src="assets/icon-256.png" width="96" align="right" alt="">
+
 # chzzk-episode-overlay
 
 치지직 같이보기에서 지금 보고 있는 화(예: `신세기 에반게리온 1화`)를 **OBS 텍스트 소스에 자동으로 띄워주는** Windows 프로그램입니다.

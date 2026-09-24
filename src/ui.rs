@@ -233,6 +233,15 @@ pub(crate) fn create(hinst: HINSTANCE) -> HWND {
         );
         WIN.set(win);
 
+        // 제목 표시줄(작은 아이콘)과 작업 표시줄(큰 아이콘)에 각각 맞는 크기를 ico에서 골라 씀
+        for (which, cx, cy) in [(0usize, 49, 50), (1, 11, 12)] {
+            // ICON_SMALL: SM_CXSMICON/SM_CYSMICON, ICON_BIG: SM_CXICON/SM_CYICON
+            let icon = LoadImageW(hinst, 1 as _, 1, GetSystemMetrics(cx), GetSystemMetrics(cy), 0); // IMAGE_ICON
+            if !icon.is_null() {
+                SendMessageW(win, 0x80, which, icon as LPARAM); // WM_SETICON
+            }
+        }
+
         // 어두운 제목 표시줄 / 스크롤바
         let dark: i32 = 1;
         DwmSetWindowAttribute(win, 20, &dark as *const i32 as _, 4);
