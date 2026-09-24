@@ -7,10 +7,17 @@
 
 > ⚠️ 개인이 만든 **비공식** 프로그램이며, 네이버(NAVER) 및 치지직(CHZZK)과 관련이 없습니다.
 
+## 지원 환경
+
+- **OBS Studio 28 이상 전용**입니다. (OBS에 기본 내장된 WebSocket 서버로 텍스트를 바꿉니다)
+- XSplit, Streamlabs Desktop 등 **OBS가 아닌 방송 프로그램은 지원하지 않습니다.**
+- PRISM Live Studio 등 OBS 기반 프로그램은 동작 여부가 확인되지 않았습니다.
+- Windows 10 / 11
+
 ## 다운로드
 
 [Releases](../../releases/latest)에서 `chzzk-episode-overlay-*.zip`을 받아 압축을 풀고 exe를 실행하세요.
-설치 과정 없이 exe 하나로 동작합니다. (Windows 10 / 11)
+설치 과정 없이 exe 하나로 동작합니다.
 
 - 바탕화면이나 문서 폴더처럼 **쓰기 가능한 폴더**에 두고 실행하세요. (설정을 exe 옆에 저장합니다)
 - 처음 실행할 때 "Windows의 PC 보호" 창이 뜨면 **추가 정보 → 실행**을 누르세요. 코드 서명이 없어서 나오는 안내입니다.

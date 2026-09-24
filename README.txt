@@ -6,6 +6,14 @@ OBS 텍스트 소스에 자동으로 띄워주는 프로그램입니다.
 다음 화로 넘어가면 자동으로 바뀌고, 같이보기를 끄면 자동으로 지워집니다.
 
 
+■ 지원 환경
+
+- OBS Studio 28 이상 전용입니다. (OBS에 기본 내장된 WebSocket 서버로 텍스트를 바꿉니다)
+- XSplit, Streamlabs Desktop 등 OBS가 아닌 방송 프로그램은 지원하지 않습니다.
+- PRISM Live Studio 등 OBS 기반 프로그램은 동작 여부가 확인되지 않았습니다.
+- Windows 10 / 11
+
+
 ■ 사용 방법
 
 1. OBS → 도구 → WebSocket 서버 설정 → [WebSocket 서버 사용] 체크
